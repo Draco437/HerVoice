@@ -101,30 +101,3 @@ def decode_bounds(geohash:str)->dict:
         "lat_min":lat_range[0], "lat_max":lat_range[1],
         "lng_min":lng_range[0], "lng_max":lng_range[1]
     }
-
-def neighbors(geohash:str)->list:
-    """Return the 8 neighboring geohash cells (N, NE, E, SE, S, SW, W, NW)."""
-    bounds=decode_bounds(geohash)
-    center=decode_hash(geohash)
-    lat_delta=bounds["lat_max"]-bounds["lat_min"]
-    lng_delta=bounds["lng_max"]-bounds["lng_min"]
-    precision=len(geohash)
-
-    offsets=[
-        (lat_delta, 0),           # N
-        (lat_delta, lng_delta),   # NE
-        (0, lng_delta),           # E
-        (-lat_delta, lng_delta),  # SE
-        (-lat_delta, 0),          # S
-        (-lat_delta, -lng_delta), # SW
-        (0, -lng_delta),          # W
-        (lat_delta, -lng_delta),  # NW
-    ]
-
-    result=[]
-    for dlat,dlng in offsets:
-        nlat=center["lat"]+dlat
-        nlng=center["lng"]+dlng
-        if -90<=nlat<=90 and -180<=nlng<=180:
-            result.append(encode_hash(nlat,nlng,precision))
-    return result
